@@ -9,3 +9,5 @@
 - table-ETL class objects should be instantiated from a table name
 
 ### Convert loader script into sequence of ETL class methods
+
+### Add qb whiteness time series trends (e.g. by conference)
