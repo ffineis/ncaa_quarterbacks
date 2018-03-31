@@ -45,7 +45,6 @@ parser.add_argument('-o'
 args = parser.parse_args()
 parser.parse_args()
 
-
 # Required overhead: connect to college_football db and obtain the names
 # of individual player statistics fields
 eng_str = 'mysql+mysqlconnector://' + args.user + ':' + args.password + '@' + args.host + '/college_football'
@@ -146,7 +145,6 @@ if __name__ == '__main__':
             roster_urls = list()
 
             for team in conf_teams:
-
                 # arrange team/conference relationships/wins/losses
                 l = team_dat[yr][conf][team]['losses']
                 w = team_dat[yr][conf][team]['wins']
@@ -198,10 +196,11 @@ if __name__ == '__main__':
     positions_df = pd.DataFrame({'position_name': positions})
     print('Found %d unique player positions.\n' % (len(positions)))
 
+    # concatenate all player's tables into one (player_dfs -> players_df)
     players_df = pd.concat(player_dfs
                            , ignore_index=True)
     players_df.drop_duplicates(inplace=True)
-    players_df.rename(columns={'name': 'player_name'}
+    players_df.rename(columns={'name': 'player_name', 'hometown': 'player_hometown'}
                       , inplace=True)
     print('Found %d unique players over %d years.\n' % (players_df.shape[0], len(yrs)))
 
@@ -209,13 +208,12 @@ if __name__ == '__main__':
     # Save data #
     # --------- #
     save_dat = {'conference': conference_df
-                , 'team': team_df
-                , 'conference_team': conference_team_df
-                , 'positions': positions_df
-                , 'player_year_dict': player_year_stats}
+        , 'team': team_df
+        , 'conference_team': conference_team_df
+        , 'positions': positions_df
+        , 'player_year_dict': player_year_stats}
 
     print('Saving data scraped from cfbstats.com to %s\n' % args.output)
     pkl.dump(save_dat, open(args.output, 'wb'))
 
     print('Successfully scraped cfbstats.com college football data')
-

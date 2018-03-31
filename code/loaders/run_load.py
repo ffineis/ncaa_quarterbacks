@@ -28,7 +28,7 @@ parser.add_argument('-l'
                     , help='college_football MySQL database host server address')
 parser.add_argument('-i'
                     , '--input'
-                    , default='localhost'
+                    , default=None
                     , type=str
                     , help='input filepath to team metadata .pkl file containing'\
                            ' results of scrapers/run_scrape.py')
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     player_dat = dat['player_year_dict']
     for yr in player_dat:
         for team in player_dat[yr]:
-            player_df = player_dat[yr][team][['hometown', 'name']]
+            player_df = player_dat[yr][team][['player_hometown', 'name']]
             player_df = player_df.rename(index=int
                                          , columns={'name': 'player_name'})
             player_df_list.append(player_df)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     # (because hometown, height, weight, etc tend to change over time (data not perfect))
     player_df = pd.concat(player_df_list
                           , ignore_index=True)
-    player_df.drop_duplicates(['player_name', 'hometown'], inplace=True)
+    player_df.drop_duplicates(['player_name', 'player_hometown'], inplace=True)
     player_df.drop_duplicates(['player_name', 'team', 'position'], inplace=True)
 
     # Reduce number of duplicated players due to hometown misspelling
@@ -129,12 +129,12 @@ if __name__ == '__main__':
     drop_idx = list()
     for player_name in repeated_players_df['player_name'].unique():
         repeat_player_df = repeated_players_df[repeated_players_df['player_name'] == player_name]
-        towns = repeated_players_df['hometown'].tolist()
+        towns = repeated_players_df['player_hometown'].tolist()
         likely_duplicate = misspelled_hometown(towns[0], towns[1])
         if likely_duplicate:
             drop_idx.append(repeat_player_df.index[1])
 
-    print('Dropping %d players due to likely duplicates from misspelled hometowns' % len(drop_idx))
+    print('Dropping %d players due to likely duplicates from misspelled player hometowns' % len(drop_idx))
     player_df.drop(drop_idx
                    , inplace=True)
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     print('Finding who played what for whom, and how each player played.')
     player_pos_df_list = list()
     player_stat_df_list = list()
-    player_pos_fields = ['height', 'weight', 'year_in_school', 'position_name', 'player_name', 'hometown']
+    player_pos_fields = ['height', 'weight', 'year_in_school', 'position_name', 'player_name', 'player_hometown']
     player_stat_fields = list(sql.get_mysql_table_schema(eng, 'player_stats').keys())
     player_dat = dat['player_year_dict']
     for yr in player_dat:
@@ -173,12 +173,12 @@ if __name__ == '__main__':
 
             # acquire data for player_statistics table
             player_stat_df = player_df[list(set(player_stat_fields).intersection(set(player_df.columns)))
-                                       + ['player_name', 'hometown']]
+                                       + ['player_name', 'player_hometown']]
             player_stat_df['year'] = yr
 
             # Drop players with no meaningful statistics
             player_stat_cols = list(set(player_stat_df.columns)
-                                    - set(['player_id', 'year', 'hometown', 'player_name']))
+                                    - set(['player_id', 'year', 'player_hometown', 'player_name']))
             tmp_df = player_stat_df[player_stat_cols]
             tmp_df = tmp_df.where((pd.notnull(tmp_df)), np.NaN)
             tmp_df.dropna(axis=0, how='all', inplace=True)
@@ -200,9 +200,9 @@ if __name__ == '__main__':
 
     player_pos_df = player_pos_df.merge(team_df, on='team_name')\
         .merge(position_df, on='position_name')\
-        .merge(players_df, on=['player_name', 'hometown'])
+        .merge(players_df, on=['player_name', 'player_hometown'])
 
-    player_stat_df = player_stat_df.merge(players_df, on=['player_name', 'hometown'])
+    player_stat_df = player_stat_df.merge(players_df, on=['player_name', 'player_hometown'])
 
     # ----------------------------------------------------------- #
     # Load data into team_player_position and player_stats tables #

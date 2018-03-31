@@ -1,5 +1,8 @@
 *.tsv
+*.csv
 *.pkl
 .idea/
-data/
 *qb_images/*.jpeg
+*.ipynb
+*/*.ipynb_checkpoints/*
+__pycache__

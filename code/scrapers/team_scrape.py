@@ -13,8 +13,8 @@ def get_team_metadata(output_file=None):
     :param output_file: full output file path to dump team scrape into a .json, default None
     means don't save output
 
-    :return: nested dictionary with years as keys, then dictionary
-    of conference, dictionary of team: URL's, wins, losses
+    :return: nested dictionary with key = year, then dictionary
+    with key = conference, dictionary with key = team: URL, wins, losses
     """
     base_url = 'http://www.cfbstats.com/%d/team/index.html'
     conf_team_dict = dict()
@@ -49,7 +49,7 @@ def get_team_metadata(output_file=None):
                 conf_team_dict[yr][conf_name][team_name]['index_url'] = index_url
                 conf_team_dict[yr][conf_name][team_name]['roster_url'] = roster_url
 
-                # Hit the index page and get the win/loss record for each valid conference/team/year 3-tuple
+                # Hit the index page and get the win/loss record for each valid (conference, team, year) 3-tuple
                 r2 = requests.get(index_url)
                 soup2 = BeautifulSoup(r2.text, 'html.parser')
                 wl = soup2.find('div', {'class': 'team-record'}).find_all('td')[1].text.split('-')
@@ -58,13 +58,13 @@ def get_team_metadata(output_file=None):
 
     # Dump output, if desired.
     if output_file:
-        with open(output_file, 'w') as of:
-            dump(conf_team_dict, fp=of, ensure_ascii=True)
+        with open(output_file, 'w') as out_file:
+            dump(conf_team_dict, fp=out_file, ensure_ascii=True)
 
     return(conf_team_dict)
 
 
 if __name__ == '__main__':
-    print('Saving College football teams by conference, by year.')
+    print('Saving college football teams by conference, by year.')
     print(get_team_metadata(os.path.join(os.getenv('HOME'), 'Desktop', 'team_metadata.txt')))
     print('Finished!')
