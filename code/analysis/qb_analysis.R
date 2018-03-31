@@ -134,4 +134,5 @@ ggsave('./etc/qb_whiteness.png'
 # -------------------------------------------------- #
 # Compute qb whiteness by conference                 #
 # -------------------------------------------------- #
-
+confQbDT <- qbDT[, .(confWhiteQb = mean(qb_whiteness)), by = 'conference_name']
+confQbDT <- confQbDT[order(confWhiteQb)]
