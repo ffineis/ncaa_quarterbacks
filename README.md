@@ -38,7 +38,7 @@ The 5 most lopsided states are as follows:
 | AR            | 22/25                                     |
 
 
-![qbWhiteness](./etc/qb_whiteness.png)
+![qbWhiteness](./etc/qb_whiteness_michigan.png)
 
 
 When I described that afternoon when I saw those football games with the white quarterbacks on ESPN, I neglected to mention that all of the teams were in the SEC (Southeastern Conference), and I was anticipating for those teams to have the highest rates of white quartbacking. I was wrong. The SEC is in the middle of the pack with the 5th lowest rate of white quarterbacking out of the 11 conferences, although the distribution of white quarterback proportions across conferences is pretty tight, only ranging from 64% to 77%:
