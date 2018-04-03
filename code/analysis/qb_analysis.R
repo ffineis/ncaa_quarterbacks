@@ -126,7 +126,6 @@ qbStateMap <- usmap::plot_usmap(data = stateQbDT
            , label = mostWhiteLabel
            , family = 'Tahoma')
 
-# Save plot.
 ggsave('./etc/qb_whiteness.png'
        , plot = qbStateMap)
 
@@ -134,5 +133,88 @@ ggsave('./etc/qb_whiteness.png'
 # -------------------------------------------------- #
 # Compute qb whiteness by conference                 #
 # -------------------------------------------------- #
-confQbDT <- qbDT[, .(confWhiteQb = mean(qb_whiteness)), by = 'conference_name']
+confQbDT <- qbDT[, .(confWhiteQb = weighted.mean(qb_whiteness
+                                                 , w = qb_count)), by = 'conference_name']
 confQbDT <- confQbDT[order(confWhiteQb)]
+
+
+# -------------------------------------------------- #
+# Compute qb whiteness by conference over time       #
+# -------------------------------------------------- #
+
+# Query fraction and count of white qb's per conference per year
+confTimeQbQuery <- 'SELECT
+  year,
+  conference_name,
+  SUM(is_caucasian) / COUNT(*) as qb_whiteness,
+  COUNT(*) as qb_count
+  FROM (
+  SELECT
+  tpp.year,
+  pl.is_caucasian,
+  c.conference_name
+  FROM player pl,
+  team t,
+  positions pos,
+  team_player_position tpp,
+  player_stats ps,
+  conference_team ct,
+  conference c
+  WHERE pl.player_id = tpp.player_id
+  AND t.team_id = tpp.team_id
+  AND pos.position_id = tpp.position_id
+  AND ps.player_id = tpp.player_id
+  AND ct.team_id = t.team_id
+  AND ct.conference_id = c.conference_id
+  AND pos.position_name = \'QB\'
+  GROUP BY pl.player_id, tpp.year
+  ORDER BY player_name ASC
+  ) as qb_time_whiteness
+  GROUP BY conference_name, year
+  ORDER BY conference_name ASC, year ASC;'
+
+# Query qb whiteness by conference timeseries data.
+qbTsDT <- as.data.table(suppressWarnings(DBI::dbGetQuery(conn
+                                                         , statement = confTimeQbQuery)))
+
+# Compute grand total qb whiteness by year, append to qbTsDT
+avgQbTsDT <- qbTsDT[, .(qb_whiteness = weighted.mean(qb_whiteness
+                                                     , w = qb_count)), by = 'year']
+avgQbTsDT[, conference_name := 'mean']
+avgQbTsDT[, qb_count := NA_integer_]
+qbTsDT <- rbindlist(list(qbTsDT
+                         , avgQbTsDT)
+                    , use.names = TRUE)
+
+# Plot qb whiteness trends for max/min/avg conference
+qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
+                                     , 'Big Ten Conference'
+                                     , 'mean')]
+       , mapping = aes(x = year
+                       , y = qb_whiteness
+                       , group = conference_name
+                       , colour = conference_name)) +
+  geom_line() +
+  scale_color_manual('conference'
+                     , labels = c('Atlantic Coast', 'Big 10', 'Avg')
+                     , values = c('#2737E3', '#EF2914', '#EF14E7')) +
+  theme(legend.position = 'right'
+        , plot.title = element_text(family = 'Tahoma'
+                                    , color = 'grey30'
+                                    , face = 'bold'
+                                    , size = 16)
+        , legend.text = element_text(family = 'Tahoma'
+                                     , color = 'grey30'
+                                     , size = 8)
+        , axis.title.x = element_text(size = 10
+                                     , family = 'Tahoma'
+                                     , color = 'grey30')
+        , axis.title.y = element_text(size = 10
+                                     , family = 'Tahoma'
+                                     , color = 'grey30')) +
+  ggtitle('College QB Whiteness Trends by Conference') +
+  xlab('Year') + 
+  ylab('White QBs/Total')
+  
+ggsave('./etc/qb_whiteness_trends.png'
+       , plot = qbStateMap)

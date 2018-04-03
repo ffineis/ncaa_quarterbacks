@@ -41,24 +41,26 @@ The 5 most lopsided states are as follows:
 ![qbWhiteness](./etc/qb_whiteness.png)
 
 
-When I described that afternoon when I saw those football games with the white quarterbacks on ESPN, I neglected to mention that all of the teams were in the SEC (Southeastern Conference), and I was anticipating for those teams to have the highest rates of white quartbacking. I was wrong. The SEC has the 4th lowest rate of white quarterbacking out of the 13 conferences, although the distribution of white quarterback proportions across conferences is pretty tight, only ranging from 63.6% to 77.8%:
+When I described that afternoon when I saw those football games with the white quarterbacks on ESPN, I neglected to mention that all of the teams were in the SEC (Southeastern Conference), and I was anticipating for those teams to have the highest rates of white quartbacking. I was wrong. The SEC is in the middle of the pack with the 5th lowest rate of white quarterbacking out of the 11 conferences, although the distribution of white quarterback proportions across conferences is pretty tight, only ranging from 64% to 77%:
 
 | Conference                   | Fraction of QBs since 2008 that are white |
 | :---------------------------:|:-----------------------------------------:|
-| Sun Belt Conference          | 0.636                                     |
-| Atlantic Coast Conference    | 0.638                                     |
-| American Athletic Conference | 0.662                                     |
-| Southeastern Conference      | 0.687                                     |
-| Mountain West Conference     | 0.691                                     |
-| Conference USA               | 0.698                                     |
-| Sun Belt                     | 0.708                                     |
-| Mountain West                | 0.748                                     |
-| Big 12 Conference            | 0.751                                     |
-| Pac-12 Conference            | 0.763                                     |
-| Big Ten Conference           | 0.767                                     |
-| Mid-American Conference      | 0.767                                     |
-| Independent                  | 0.778                                     |
+| Atlantic Coast Conference    | 0.642                                     |
+| American Athletic Conference | 0.663                                     |
+| Sun Belt Conference          | 0.674                                     |
+| Conference USA               | 0.696                                     |
+| Southeastern Conference      | 0.696                                     |
+| Mountain West Conference     | 0.711                                     |
+| Independent   		       | 0.741                                     |
+| Pac-12 Conference            | 0.742                                     |
+| Big 12 Conference            | 0.758                                     |
+| Mid-American Conference      | 0.762                                     |
+| Big Ten Conference           | 0.771                                     |
 
+
+The trends in QB whiteness, similar to the NFL statistics, seem almost constant over the period between 2008 and 2017, although the most equitable conference (the Atlantic Coast Conference) has seen a decrease in whiteness (a move towards equitability) over the last four years, and the mean QB whiteness over all D1 teams has been decreasing for the last three years.
+
+![qbWhitenessTrends](./etc/qb_whiteness_trends.png)
 
 
 
