@@ -195,7 +195,8 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
                        , group = conference_name
                        , colour = conference_name
                        , linetype = conference_name)) +
-  geom_line(show.legend = F) +
+  geom_line(show.legend = F
+            , size = 1.5) +
   scale_color_manual('conference'
                      , labels = c('Atlantic Coast', 'Big 10', 'Avg')
                      , values = c('#2737E3', '#EF2914', '#EF14E7')) +
@@ -204,7 +205,7 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
         , plot.title = element_text(family = 'Tahoma'
                                     , color = 'grey30'
                                     , face = 'bold'
-                                    , size = 16)
+                                    , size = 18)
         , legend.text = element_text(family = 'Tahoma'
                                      , color = 'grey30'
                                      , size = 8)
