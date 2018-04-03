@@ -235,7 +235,7 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
   annotate('text'
            , x = 7
            , y = 0.74
-           , label = 'Mean'
+           , label = 'College mean'
            , family = 'Tahoma') +
   annotate('text'
            , x = 4
