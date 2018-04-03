@@ -177,30 +177,34 @@ confTimeQbQuery <- 'SELECT
 qbTsDT <- as.data.table(suppressWarnings(DBI::dbGetQuery(conn
                                                          , statement = confTimeQbQuery)))
 
-# Compute grand total qb whiteness by year, append to qbTsDT
+# Compute grand total qb whiteness by year, add NFL stats from TIDES, append to qbTsDT
 avgQbTsDT <- qbTsDT[, .(qb_whiteness = weighted.mean(qb_whiteness
                                                      , w = qb_count)), by = 'year']
-avgQbTsDT[, conference_name := 'mean']
+avgQbTsDT[, conference_name := 'College mean']
 avgQbTsDT[, qb_count := NA_integer_]
 qbTsDT <- rbindlist(list(qbTsDT
-                         , avgQbTsDT)
+                         , avgQbTsDT
+                         , data.table(qb_count = NA_integer_
+                                      , conference_name = 'NFL'
+                                      , year = c(2008:2014)
+                                      , qb_whiteness = c(.82, .81, .83, .78, .79, .821, .802)))
                     , use.names = TRUE)
 
 # Plot qb whiteness trends for max/min/avg conference
 qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
                                      , 'Big Ten Conference'
-                                     , 'mean')]
+                                     , 'College mean'
+                                     , 'NFL')]
        , mapping = aes(x = year
                        , y = qb_whiteness
                        , group = conference_name
                        , colour = conference_name
                        , linetype = conference_name)) +
   geom_line(show.legend = F
-            , size = 1.5) +
+            , size = 1.3) +
   scale_color_manual('conference'
-                     , labels = c('Atlantic Coast', 'Big 10', 'Avg')
-                     , values = c('#2737E3', '#EF2914', '#EF14E7')) +
-  scale_linetype_manual(values = c(rep('solid', 2), 'longdash')) +
+                     , values = c('#2737E3', '#EF6814', '#EF14E7', '#EF1B14')) +
+  scale_linetype_manual(values = c(rep('solid', 2), 'longdash', 'twodash')) +
   theme(legend.position = 'right'
         , plot.title = element_text(family = 'Tahoma'
                                     , color = 'grey30'
@@ -220,7 +224,12 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
   ylab('White QBs/Total') +
   annotate('text'
            , x = 3
-           , y = 0.8
+           , y = 0.84
+           , label = 'NFL'
+           , family = 'Tahoma') +
+  annotate('text'
+           , x = 9
+           , y = 0.82
            , label = 'Big 10'
            , family = 'Tahoma') +
   annotate('text'
