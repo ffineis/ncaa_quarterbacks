@@ -193,11 +193,13 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
        , mapping = aes(x = year
                        , y = qb_whiteness
                        , group = conference_name
-                       , colour = conference_name)) +
-  geom_line() +
+                       , colour = conference_name
+                       , linetype = conference_name)) +
+  geom_line(show.legend = F) +
   scale_color_manual('conference'
                      , labels = c('Atlantic Coast', 'Big 10', 'Avg')
                      , values = c('#2737E3', '#EF2914', '#EF14E7')) +
+  scale_linetype_manual(values = c(rep('solid', 2), 'longdash')) +
   theme(legend.position = 'right'
         , plot.title = element_text(family = 'Tahoma'
                                     , color = 'grey30'
@@ -214,7 +216,22 @@ qbTrends <- ggplot(qbTsDT[conference_name %in% c('Atlantic Coast Conference'
                                      , color = 'grey30')) +
   ggtitle('College QB Whiteness Trends by Conference') +
   xlab('Year') + 
-  ylab('White QBs/Total')
+  ylab('White QBs/Total') +
+  annotate('text'
+           , x = 3
+           , y = 0.8
+           , label = 'Big 10'
+           , family = 'Tahoma') +
+  annotate('text'
+           , x = 7
+           , y = 0.74
+           , label = 'Mean'
+           , family = 'Tahoma') +
+  annotate('text'
+           , x = 4
+           , y = 0.63
+           , label = 'Atlantic Athletic Conf'
+           , family = 'Tahoma') 
   
 ggsave('./etc/qb_whiteness_trends.png'
-       , plot = qbStateMap)
+       , plot = qbTrends)
