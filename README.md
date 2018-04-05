@@ -16,7 +16,7 @@ A normal tendency when working on some type of data scraping project is to write
 
 Instead, it might just be easier to just set up a relational database (e.g. a SQL database), scrape the data once (or at regular periodic intervals), and then write SQL queries to get whatever we need from our own database, whenever we want. 
 
-Even a football insider like me can get the gist of how a football league works. Here's my stab at the relationships between conferences, teams, and players:
+Even a football outsider like me can get the gist of how a football league works. Here's my stab at the relationships between conferences, teams, and players:
 
 ![ncaa](./etc/college_football_db.png)
 
